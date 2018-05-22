@@ -58,7 +58,7 @@
                 <tbody v-if="visibleData.length">
                     <template v-for="(row, index) in visibleData">
                         <tr
-                            :key="index"
+                            :key="handleDataKey(row, index)"
                             :class="[rowClass(row, index), {
                                 'is-selected': row === selected,
                                 'is-checked': isRowChecked(row)
@@ -187,6 +187,10 @@
             data: {
                 type: Array,
                 default: () => []
+            },
+            dataKey: {
+                type: String
+                // ,required:true
             },
             columns: {
                 type: Array,
@@ -600,6 +604,20 @@
                 return !key.length
                     ? index
                     : index[key]
+            },
+
+            /**
+            * When the dataKey is defined we use the object[dataKey] as index.
+            * If not, use the object reference by default.
+            */
+            handleDataKey(row, index) {
+                const key = this.dataKey
+                if (!key){
+                    return index
+                }
+                return !key.length
+                    ? null
+                    : row[key]
             },
 
             checkPredefinedDetailedRows() {
